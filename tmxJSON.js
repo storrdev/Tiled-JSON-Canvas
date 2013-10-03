@@ -65,27 +65,30 @@ storr@storrdev.com
 		
 		separateTiles: function() {
 		
+			var successCount = 0;
+		
 			for (var ts = 0; ts < tilesets.length; ts++) {
-				
-				var tileCanvas = document.createElement("canvas");
-				var tileContext = tileCanvas.getContext("2d");
-				
-				tileCanvas.width = tilesets[ts].width;
-				tileCanvas.height = tilesets[ts].height;
-
-				tileContext.drawImage(tilesets[ts], 0, 0);
 				
 				var nTilesX = tilesets[ts].width / map.tilewidth;
 				var nTilesY = tilesets[ts].height / map.tileheight;
 				
 				for (ty = 0; ty < nTilesY; ty++) {
 					for (tx = 0; tx < nTilesX; tx++) {
+						var tileCanvas = document.createElement("canvas");
+						var tileContext = tileCanvas.getContext("2d");
+						
+						tileCanvas.width = map.tilewidth;
+						tileCanvas.height = map.tileheight;
+						
 						var x = tx * map.tilewidth;
 						var y = ty * map.tileheight;
-					
-						var imageData = tileContext.getImageData(x, y, map.tilewidth, map.tileheight);
+						
+						tileContext.drawImage(tilesets[ts], -x, -y);
 
-						tiles.push(imageData);
+						var tile = new Image();
+						tile.src = tileCanvas.toDataURL("image/png");
+
+						tiles.push(tile);
 					}
 				}
 			}
@@ -107,7 +110,7 @@ storr@storrdev.com
 						
 						
 						if (map.layers[l].data[d] != 0) {
-							context.putImageData(tiles[map.layers[l].data[d]], x, y);
+							context.drawImage(tiles[map.layers[l].data[d]], x, y);
 						}
 						x += map.tilewidth;
 					}
